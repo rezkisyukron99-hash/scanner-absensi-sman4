@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="theme-color" content="#1e40af">
   <title>Scanner Absensi - SMA Negeri 4 Siak Hulu</title>
-
-  <!-- Library QR Scanner -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
   <style>
     * {
@@ -16,966 +13,870 @@
 
     body {
       margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f1f5f9;
-      color: #0f172a;
+      color: #1e293b;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 18px;
     }
 
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: 20px;
     }
 
     .header {
+      background: #1e40af;
+      color: white;
+      border-radius: 16px;
+      padding: 20px;
       text-align: center;
-      margin-bottom: 18px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+      margin-bottom: 16px;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 24px;
-      color: #0f172a;
+      font-size: 22px;
     }
 
     .header p {
       margin: 7px 0 0;
-      color: #64748b;
+      opacity: 0.92;
       font-size: 14px;
     }
 
     .card {
       background: white;
-      border-radius: 18px;
+      border-radius: 16px;
       padding: 18px;
-      box-shadow: 0 5px 20px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      margin-bottom: 16px;
     }
 
     .jenis {
       text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #e2e8f0;
+      margin-bottom: 14px;
+    }
+
+    .jenis-badge {
+      display: inline-block;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 800;
+      font-size: 15px;
     }
 
     #reader {
       width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
       overflow: hidden;
-      border-radius: 14px;
-      background: #000;
+      border-radius: 12px;
     }
 
     .status {
       margin-top: 15px;
       padding: 13px;
-      border-radius: 12px;
-      background: #f8fafc;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #475569;
       text-align: center;
-      font-size: 14px;
       line-height: 1.5;
+      font-size: 14px;
     }
 
-    .success {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .warning {
+    .status.proses {
       background: #fef3c7;
       color: #92400e;
     }
 
-    .info {
-      background: #dbeafe;
+    .status.sukses {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.gagal {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .gps {
+      padding: 13px;
+      border-radius: 10px;
+      background: #f8fafc;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .gps strong {
       color: #1e40af;
     }
 
-    .student-result {
-      display: none;
-      margin-top: 15px;
-      padding: 18px;
-      border-radius: 14px;
-      background: #f8fafc;
+    .info {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.6;
       text-align: center;
     }
 
-    .student-result .nama {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .student-result .detail {
-      font-size: 14px;
-      color: #475569;
+    .hasil {
+      display: none;
+      margin-top: 15px;
+      padding: 16px;
+      border-radius: 12px;
       line-height: 1.7;
     }
 
-    .button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 13px 16px;
-      border: 0;
-      border-radius: 12px;
-      background: #0f172a;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
+    .hasil.sukses {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
     }
 
-    .button:hover {
-      opacity: 0.9;
+    .hasil.terlambat {
+      display: block;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+    }
+
+    .hasil.gagal {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .siswa {
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.75);
+      border-radius: 9px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-hijau {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-merah {
+      background: #dc2626;
+      color: white;
     }
 
     .footer {
       text-align: center;
-      margin-top: 18px;
       color: #94a3b8;
       font-size: 12px;
+      padding: 8px 0 20px;
     }
 
-    .hidden {
-      display: none !important;
+    @media (max-width: 520px) {
+      .page {
+        padding: 10px;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
     }
   </style>
+
+  <!-- Library scanner QR -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="page">
+    <div class="container">
 
-  <div class="header">
-    <h1>SMA Negeri 4 Siak Hulu</h1>
-    <p>Scanner Absensi Siswa</p>
+      <div class="header">
+        <h1>SMA Negeri 4 Siak Hulu</h1>
+        <p>Scanner Absensi Siswa</p>
+      </div>
+
+      <div class="card">
+
+        <div class="jenis">
+          <span id="jenisBadge" class="jenis-badge">ABSENSI MASUK</span>
+        </div>
+
+        <div id="reader"></div>
+
+        <div id="status" class="status proses">
+          Menyiapkan kamera dan GPS...
+        </div>
+
+        <div id="gpsStatus" class="gps">
+          <strong>📍 GPS:</strong> sedang mengambil lokasi perangkat...
+        </div>
+
+        <div id="hasil" class="hasil"></div>
+
+        <button id="btnRestart" class="btn btn-hijau" style="display:none;" onclick="mulaiScanner()">
+          📷 Scan QR Berikutnya
+        </button>
+
+        <button id="btnTutup" class="btn btn-merah" onclick="tutupScanner()">
+          ✕ Tutup Scanner
+        </button>
+
+      </div>
+
+      <div class="card info">
+        <b>Petunjuk:</b><br>
+        Izinkan akses kamera dan lokasi ketika browser meminta izin.
+        Arahkan kamera ke QR siswa. Setelah QR terbaca, data akan dikirim
+        otomatis ke sistem absensi.
+      </div>
+
+      <div class="footer">
+        Sistem Informasi Absensi Siswa<br>
+        SMA Negeri 4 Siak Hulu
+      </div>
+
+    </div>
   </div>
 
-  <div class="card">
+  <script>
+    /*
+     * ============================================================
+     * KONFIGURASI SCANNER
+     * ============================================================
+     *
+     * URL ini adalah Web App Google Apps Script.
+     * Jangan diubah lagi kecuali URL Web App Apps Script berubah.
+     */
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbwEQI__djH_UyYZemWDu7s8r3BMm66x5m5QEQN40pqeo8p3KpFtlQLshoU96QbAZCxEmQ/exec';
 
-    <div id="jenisAbsensi" class="jenis">
-      ABSENSI MASUK
-    </div>
+    /*
+     * Handoff dikirim otomatis oleh aplikasi utama.
+     * Jangan membuka halaman scanner ini secara manual untuk
+     * melakukan absensi karena handoff harus dibuat oleh server.
+     */
+    const params = new URLSearchParams(window.location.search);
 
-    <div id="reader"></div>
+    const HANDOFF =
+      params.get('handoff') ||
+      params.get('t') ||
+      '';
 
-    <div id="status" class="status info">
-      Menyiapkan scanner...
-    </div>
+    const JENIS =
+      String(params.get('jenis') || 'MASUK').toUpperCase() === 'PULANG'
+        ? 'PULANG'
+        : 'MASUK';
 
-    <div id="hasil" class="student-result">
-      <div id="namaSiswa" class="nama"></div>
-      <div id="detailSiswa" class="detail"></div>
-    </div>
+    let qrScanner = null;
+    let scannerBerjalan = false;
+    let sedangMemproses = false;
 
-    <button
-      id="btnMulai"
-      class="button hidden"
-      onclick="mulaiScanner()">
-      Mulai Scanner
-    </button>
+    let lokasiGPS = {
+      latitude: null,
+      longitude: null,
+      accuracy: null
+    };
 
-  </div>
+    let gpsWatchId = null;
 
-  <div class="footer">
-    Sistem Absensi SMA Negeri 4 Siak Hulu
-  </div>
+    const statusEl = document.getElementById('status');
+    const gpsStatusEl = document.getElementById('gpsStatus');
+    const hasilEl = document.getElementById('hasil');
+    const jenisBadgeEl = document.getElementById('jenisBadge');
+    const btnRestartEl = document.getElementById('btnRestart');
 
-</div>
+    jenisBadgeEl.textContent =
+      JENIS === 'PULANG'
+        ? 'ABSENSI PULANG'
+        : 'ABSENSI MASUK';
 
-
-<script>
-
-  /* =========================================================
-     KONFIGURASI
-     ========================================================= */
-
-  /*
-   * GANTI BAGIAN INI dengan URL Web App Google Apps Script.
-   *
-   * Contoh:
-   * https://script.google.com/macros/s/AKxxxxxxxxxxxxxxxx/exec
-   *
-   * JANGAN menambahkan ?api=scan di sini.
-   */
- const API_URL =
-  'https://script.google.com/macros/s/AKfycbwEQI__djH_UyYZemWDu7s8r3BMm66x5m5QEQN40pqeo8p3KpFtlQLshoU96QbAZCxEmQ/exec';
-
-
-  /* =========================================================
-     PARAMETER DARI LINK SCANNER
-     ========================================================= */
-
-  const params = new URLSearchParams(window.location.search);
-
-  const HANDOFF =
-    params.get('handoff') ||
-    params.get('t') ||
-    '';
-
-  let JENIS =
-    String(params.get('jenis') || 'MASUK').toUpperCase();
-
-  if (JENIS !== 'PULANG') {
-    JENIS = 'MASUK';
-  }
-
-
-  /* =========================================================
-     VARIABEL SCANNER
-     ========================================================= */
-
-  let html5QrCode = null;
-  let scannerAktif = false;
-  let sedangMemproses = false;
-  let gpsData = null;
-
-
-  /* =========================================================
-     ELEMENT HTML
-     ========================================================= */
-
-  const statusEl =
-    document.getElementById('status');
-
-  const jenisEl =
-    document.getElementById('jenisAbsensi');
-
-  const hasilEl =
-    document.getElementById('hasil');
-
-  const namaSiswaEl =
-    document.getElementById('namaSiswa');
-
-  const detailSiswaEl =
-    document.getElementById('detailSiswa');
-
-  const btnMulai =
-    document.getElementById('btnMulai');
-
-
-  /* =========================================================
-     TAMPILKAN JENIS ABSENSI
-     ========================================================= */
-
-  function tampilkanJenis() {
-
-    if (JENIS === 'PULANG') {
-      jenisEl.textContent = 'ABSENSI PULANG';
-    } else {
-      jenisEl.textContent = 'ABSENSI MASUK';
+    function setStatus(text, kelas) {
+      statusEl.className = 'status ' + (kelas || '');
+      statusEl.innerHTML = text;
     }
 
-  }
+    function setHasil(html, kelas) {
+      hasilEl.className = 'hasil ' + (kelas || '');
+      hasilEl.innerHTML = html || '';
+      hasilEl.style.display = html ? 'block' : 'none';
+    }
 
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
-  /* =========================================================
-     STATUS
-     ========================================================= */
-
-  function setStatus(pesan, tipe = 'info') {
-
-    statusEl.textContent = pesan;
-
-    statusEl.className =
-      'status ' + tipe;
-
-  }
-
-
-  /* =========================================================
-     GPS
-     ========================================================= */
-
-  function ambilGPS() {
-
-    return new Promise(function(resolve) {
-
+    function mulaiGPS() {
       if (!navigator.geolocation) {
-
-        setStatus(
-          'Browser tidak mendukung GPS.',
-          'error'
-        );
-
-        resolve(null);
+        gpsStatusEl.innerHTML =
+          '<strong>📍 GPS:</strong> browser tidak mendukung GPS.';
         return;
       }
 
-      setStatus(
-        'Mengambil lokasi GPS...',
-        'info'
-      );
+      gpsStatusEl.innerHTML =
+        '<strong>📍 GPS:</strong> meminta izin lokasi...';
 
       navigator.geolocation.getCurrentPosition(
-
         function(position) {
-
-          gpsData = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy || 0
-          };
-
-          resolve(gpsData);
-
+          simpanLokasi(position);
         },
-
         function(error) {
-
-          console.log(
-            'GPS Error:',
-            error
-          );
-
-          setStatus(
-            'Lokasi GPS tidak dapat diperoleh. Pastikan izin lokasi diaktifkan.',
-            'error'
-          );
-
-          resolve(null);
-
+          tampilkanErrorGPS(error);
         },
-
         {
           enableHighAccuracy: true,
           timeout: 15000,
           maximumAge: 0
         }
-
       );
 
-    });
-
-  }
-
-
-  /* =========================================================
-     STOP SCANNER
-     ========================================================= */
-
-  async function hentikanScanner() {
-
-    if (!html5QrCode || !scannerAktif) {
-      return;
-    }
-
-    try {
-
-      await html5QrCode.stop();
-
-    } catch (error) {
-
-      console.log(
-        'Scanner stop:',
-        error
-      );
-
-    }
-
-    scannerAktif = false;
-
-  }
-
-
-  /* =========================================================
-     CALLBACK QR TERBACA
-     ========================================================= */
-
-  async function qrTerbaca(decodedText) {
-
-    if (sedangMemproses) {
-      return;
-    }
-
-    sedangMemproses = true;
-
-    await hentikanScanner();
-
-    setStatus(
-      'QR terbaca. Memeriksa data siswa...',
-      'info'
-    );
-
-    hasilEl.style.display = 'none';
-
-    /*
-     * Pastikan GPS tersedia.
-     */
-    if (!gpsData) {
-
-      gpsData = await ambilGPS();
-
-    }
-
-    if (!gpsData) {
-
-      setStatus(
-        'Absensi tidak dapat diproses karena lokasi GPS tidak tersedia.',
-        'error'
-      );
-
-      sedangMemproses = false;
-
-      tampilkanTombolMulai();
-
-      return;
-    }
-
-
-    /*
-     * Kirim data ke Apps Script.
-     */
-    kirimAbsensi(
-      decodedText,
-      gpsData
-    );
-
-  }
-
-
-  /* =========================================================
-     JSONP KE GOOGLE APPS SCRIPT
-     ========================================================= */
-
-  function kirimAbsensi(qrCode, lokasi) {
-
-    if (
-      !API_URL ||
-      API_URL.indexOf('GANTI_DENGAN') !== -1
-    ) {
-
-      setStatus(
-        'URL Web App Apps Script belum diatur pada index.html.',
-        'error'
-      );
-
-      sedangMemproses = false;
-
-      tampilkanTombolMulai();
-
-      return;
-    }
-
-
-    if (!HANDOFF) {
-
-      setStatus(
-        'Link scanner tidak memiliki token handoff.',
-        'error'
-      );
-
-      sedangMemproses = false;
-
-      tampilkanTombolMulai();
-
-      return;
-    }
-
-
-    /*
-     * Callback JSONP unik.
-     */
-    const callbackName =
-      'scannerCallback_' +
-      Date.now() +
-      '_' +
-      Math.floor(Math.random() * 100000);
-
-
-    window[callbackName] =
-      function(result) {
-
-        try {
-
-          prosesHasilAbsensi(result);
-
-        } finally {
-
-          delete window[callbackName];
-
-          if (script.parentNode) {
-            script.parentNode.removeChild(script);
+      try {
+        gpsWatchId = navigator.geolocation.watchPosition(
+          function(position) {
+            simpanLokasi(position);
+          },
+          function(error) {
+            tampilkanErrorGPS(error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 5000
           }
-
-        }
-
-      };
-
-
-    const url =
-      API_URL +
-      '?api=scan' +
-      '&handoff=' +
-      encodeURIComponent(HANDOFF) +
-      '&qrCode=' +
-      encodeURIComponent(qrCode) +
-      '&jenis=' +
-      encodeURIComponent(JENIS) +
-      '&latitude=' +
-      encodeURIComponent(lokasi.latitude) +
-      '&longitude=' +
-      encodeURIComponent(lokasi.longitude) +
-      '&accuracy=' +
-      encodeURIComponent(lokasi.accuracy || 0) +
-      '&callback=' +
-      encodeURIComponent(callbackName);
-
-
-    const script =
-      document.createElement('script');
-
-    script.src = url;
-
-    script.async = true;
-
-
-    script.onerror =
-      function() {
-
-        setStatus(
-          'Gagal menghubungi server absensi.',
-          'error'
         );
-
-        sedangMemproses = false;
-
-        delete window[callbackName];
-
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-
-        tampilkanTombolMulai();
-
-      };
-
-
-    document.body.appendChild(script);
-
-  }
-
-
-  /* =========================================================
-     PROSES HASIL ABSENSI
-     ========================================================= */
-
-  function prosesHasilAbsensi(result) {
-
-    console.log(
-      'Hasil absensi:',
-      result
-    );
-
-
-    if (!result) {
-
-      setStatus(
-        'Server tidak memberikan hasil.',
-        'error'
-      );
-
-      sedangMemproses = false;
-
-      tampilkanTombolMulai();
-
-      return;
+      } catch (e) {
+        console.log('GPS watch gagal:', e);
+      }
     }
 
+    function simpanLokasi(position) {
+      lokasiGPS.latitude = Number(position.coords.latitude);
+      lokasiGPS.longitude = Number(position.coords.longitude);
+      lokasiGPS.accuracy = Number(position.coords.accuracy || 0);
 
-    /*
-     * Backend menggunakan ok:true.
-     */
-    const berhasil =
-      result.ok === true ||
-      result.success === true;
+      gpsStatusEl.innerHTML =
+        '<strong>📍 GPS siap</strong><br>' +
+        'Latitude: ' + escapeHtml(lokasiGPS.latitude.toFixed(6)) + '<br>' +
+        'Longitude: ' + escapeHtml(lokasiGPS.longitude.toFixed(6)) + '<br>' +
+        'Akurasi: ' + escapeHtml(Math.round(lokasiGPS.accuracy)) + ' meter';
+    }
 
+    function tampilkanErrorGPS(error) {
+      let pesan = 'Lokasi tidak dapat diperoleh.';
 
-    if (berhasil) {
-
-      let pesan =
-        result.message ||
-        'Absensi berhasil dicatat.';
-
-
-      setStatus(
-        pesan,
-        'success'
-      );
-
-
-      /*
-       * Tampilkan informasi siswa
-       * jika dikirim oleh backend.
-       */
-      if (
-        result.namaSiswa ||
-        result.nama ||
-        result.studentName
-      ) {
-
-        const nama =
-          result.namaSiswa ||
-          result.nama ||
-          result.studentName ||
-          '';
-
-        namaSiswaEl.textContent =
-          nama;
-
-
-        let detail = '';
-
-
-        if (result.nis) {
-          detail +=
-            'NIS: ' +
-            result.nis +
-            '<br>';
-        }
-
-
-        if (result.namaKelas) {
-          detail +=
-            'Kelas: ' +
-            result.namaKelas +
-            '<br>';
-        }
-
-
-        if (result.status) {
-          detail +=
-            'Status: ' +
-            result.status;
-        }
-
-
-        detailSiswaEl.innerHTML =
-          detail;
-
-
-        hasilEl.style.display =
-          'block';
-
+      if (error && error.code === 1) {
+        pesan =
+          'Izin lokasi ditolak. Silakan izinkan lokasi untuk situs ini.';
+      } else if (error && error.code === 2) {
+        pesan =
+          'Lokasi perangkat tidak tersedia.';
+      } else if (error && error.code === 3) {
+        pesan =
+          'Permintaan lokasi timeout. Coba lagi.';
       }
 
+      gpsStatusEl.innerHTML =
+        '<strong>📍 GPS:</strong> ' +
+        escapeHtml(pesan);
+    }
 
-      /*
-       * Setelah berhasil,
-       * scanner dimulai kembali.
-       */
-      setTimeout(
-        function() {
-
-          sedangMemproses = false;
-
-          mulaiScanner();
-
-        },
-        1500
-      );
-
-
-    } else {
-
-      setStatus(
-        result.message ||
-        'Absensi ditolak.',
-        'error'
-      );
-
-
-      /*
-       * Jika duplicate, jangan langsung
-       * membuat proses berulang.
-       */
-      if (result.duplicate === true) {
-
+    function validasiAwal() {
+      if (!HANDOFF) {
         setStatus(
-          result.message ||
-          'Siswa sudah melakukan absensi.',
-          'warning'
+          '❌ Link scanner tidak valid.<br>Silakan buka Scanner dari menu Absensi Guru.',
+          'gagal'
         );
-
+        return false;
       }
 
-
-      sedangMemproses = false;
-
-      tampilkanTombolMulai();
-
-    }
-
-  }
-
-
-  /* =========================================================
-     TOMBOL MULAI
-     ========================================================= */
-
-  function tampilkanTombolMulai() {
-
-    btnMulai.classList.remove(
-      'hidden'
-    );
-
-  }
-
-
-  function sembunyikanTombolMulai() {
-
-    btnMulai.classList.add(
-      'hidden'
-    );
-
-  }
-
-
-  /* =========================================================
-     MULAI SCANNER
-     ========================================================= */
-
-  async function mulaiScanner() {
-
-    if (scannerAktif) {
-      return;
-    }
-
-
-    sembunyikanTombolMulai();
-
-
-    hasilEl.style.display =
-      'none';
-
-
-    /*
-     * Ambil GPS sebelum scanner.
-     */
-    if (!gpsData) {
-
-      gpsData =
-        await ambilGPS();
-
-    }
-
-
-    if (!gpsData) {
-
-      tampilkanTombolMulai();
-
-      return;
-
-    }
-
-
-    setStatus(
-      'Mengaktifkan kamera...',
-      'info'
-    );
-
-
-    try {
-
-      if (!html5QrCode) {
-
-        html5QrCode =
-          new Html5Qrcode(
-            'reader'
-          );
-
+      if (!API_URL || API_URL.indexOf('GANTI_DENGAN') !== -1) {
+        setStatus(
+          '❌ URL Web App Apps Script belum dikonfigurasi.',
+          'gagal'
+        );
+        return false;
       }
 
+      if (typeof Html5Qrcode === 'undefined') {
+        setStatus(
+          '❌ Library scanner QR gagal dimuat. Periksa koneksi internet.',
+          'gagal'
+        );
+        return false;
+      }
 
-      /*
-       * Kamera belakang.
-       */
-      await html5QrCode.start(
+      return true;
+    }
 
-        {
-          facingMode: {
-            exact: 'environment'
-          }
-        },
+    async function mulaiScanner() {
+      if (sedangMemproses) {
+        return;
+      }
 
-        {
+      if (!validasiAwal()) {
+        return;
+      }
+
+      if (scannerBerjalan) {
+        return;
+      }
+
+      setHasil('', '');
+      btnRestartEl.style.display = 'none';
+
+      setStatus(
+        '📷 Meminta akses kamera...<br>Jika muncul permintaan izin, pilih Izinkan.',
+        'proses'
+      );
+
+      try {
+        qrScanner = new Html5Qrcode('reader');
+
+        const config = {
           fps: 10,
-
-          qrbox: function(
-            viewfinderWidth,
-            viewfinderHeight
-          ) {
-
+          qrbox: function(viewfinderWidth, viewfinderHeight) {
             const ukuran =
               Math.floor(
-                Math.min(
-                  viewfinderWidth,
-                  viewfinderHeight
-                ) * 0.72
+                Math.min(viewfinderWidth, viewfinderHeight) * 0.72
               );
 
             return {
-              width: ukuran,
-              height: ukuran
+              width: Math.min(320, Math.max(180, ukuran)),
+              height: Math.min(320, Math.max(180, ukuran))
             };
-
           },
-
           aspectRatio: 1.0,
+          rememberLastUsedCamera: true
+        };
 
-          disableFlip: false
+        let cameraConfig = {
+          facingMode: 'environment'
+        };
 
-        },
+        try {
+          cameraConfig = {
+            facingMode: {
+              exact: 'environment'
+            }
+          };
+        } catch (e) {}
 
-        function(decodedText) {
+        await qrScanner.start(
+          cameraConfig,
+          config,
+          ketikaQRTerbaca,
+          function(errorMessage) {
+            /*
+             * Error pembacaan QR diabaikan.
+             * Scanner akan terus berjalan sampai QR benar-benar terbaca.
+             */
+          }
+        );
 
-          qrTerbaca(
-            decodedText
-          );
+        scannerBerjalan = true;
 
-        },
+        setStatus(
+          '🟢 Kamera aktif.<br>Arahkan QR siswa ke kotak scanner.',
+          ''
+        );
 
-        function(errorMessage) {
+      } catch (error) {
+        console.error('Gagal memulai kamera:', error);
 
-          /*
-           * Error scanning biasa
-           * tidak perlu ditampilkan
-           * karena terjadi terus-menerus
-           * selama kamera mencari QR.
-           */
+        scannerBerjalan = false;
 
+        let pesan =
+          error && error.message
+            ? error.message
+            : String(error);
+
+        if (
+          pesan.toLowerCase().indexOf('permission') !== -1 ||
+          pesan.toLowerCase().indexOf('notallowed') !== -1
+        ) {
+          pesan =
+            'Izin kamera ditolak atau diblokir browser. ' +
+            'Silakan izinkan kamera untuk halaman ini, lalu coba lagi.';
         }
 
-      );
-
-
-      scannerAktif = true;
-
-
-      setStatus(
-        'Arahkan kamera ke QR siswa.',
-        'info'
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        'Camera error:',
-        error
-      );
-
-
-      let pesan =
-        'Kamera tidak dapat dibuka.';
-
-
-      if (
-        error &&
-        error.message
-      ) {
-
-        pesan +=
-          ' ' +
-          error.message;
-
-      }
-
-
-      setStatus(
-        pesan,
-        'error'
-      );
-
-
-      tampilkanTombolMulai();
-
-    }
-
-  }
-
-
-  /* =========================================================
-     SAAT HALAMAN DIBUKA
-     ========================================================= */
-
-  window.addEventListener(
-    'load',
-    function() {
-
-      tampilkanJenis();
-
-
-      /*
-       * Validasi handoff.
-       */
-      if (!HANDOFF) {
-
         setStatus(
-          'Link scanner tidak valid atau token handoff tidak ditemukan.',
-          'error'
+          '❌ Kamera tidak dapat dibuka.<br><br>' +
+          escapeHtml(pesan),
+          'gagal'
         );
 
+        btnRestartEl.style.display = 'block';
+      }
+    }
+
+    async function hentikanScanner() {
+      if (!qrScanner) {
+        scannerBerjalan = false;
         return;
       }
 
+      try {
+        if (scannerBerjalan) {
+          await qrScanner.stop();
+        }
+      } catch (e) {
+        console.log('Stop scanner:', e);
+      }
 
-      /*
-       * Validasi URL API.
-       */
-      if (
-        !API_URL ||
-        API_URL.indexOf('GANTI_DENGAN') !== -1
-      ) {
+      try {
+        qrScanner.clear();
+      } catch (e) {
+        console.log('Clear scanner:', e);
+      }
 
-        setStatus(
-          'Scanner belum dikonfigurasi. URL Web App Apps Script belum diisi.',
-          'error'
-        );
+      qrScanner = null;
+      scannerBerjalan = false;
+    }
 
+    async function ketikaQRTerbaca(decodedText) {
+      if (sedangMemproses) {
         return;
       }
 
+      const kodeQR = String(decodedText || '').trim();
 
-      /*
-       * Mulai otomatis.
-       */
-      mulaiScanner();
-
-    }
-  );
-
-
-  /* =========================================================
-     IZIN KAMERA / VISIBILITAS HALAMAN
-     ========================================================= */
-
-  document.addEventListener(
-    'visibilitychange',
-    function() {
-
-      if (
-        document.hidden &&
-        scannerAktif
-      ) {
-
-        hentikanScanner();
-
+      if (!kodeQR) {
+        return;
       }
 
-    }
-  );
+      sedangMemproses = true;
 
-</script>
+      await hentikanScanner();
+
+      btnRestartEl.style.display = 'none';
+
+      setStatus(
+        '⏳ QR terbaca. Mengirim absensi ke server...',
+        'proses'
+      );
+
+      setHasil('', '');
+
+      if (
+        lokasiGPS.latitude === null ||
+        lokasiGPS.longitude === null
+      ) {
+        setStatus(
+          '❌ GPS belum tersedia.<br>Mohon tunggu lokasi tersedia lalu scan kembali.',
+          'gagal'
+        );
+
+        sedangMemproses = false;
+        btnRestartEl.style.display = 'block';
+        return;
+      }
+
+      kirimAbsensi(kodeQR);
+    }
+
+    function kirimAbsensi(kodeQR) {
+      const callbackName =
+        'scannerCallback_' +
+        Date.now() +
+        '_' +
+        Math.floor(Math.random() * 100000);
+
+      let script = null;
+      let selesai = false;
+
+      function bersihkan() {
+        selesai = true;
+
+        try {
+          delete window[callbackName];
+        } catch (e) {
+          window[callbackName] = undefined;
+        }
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      }
+
+      window[callbackName] = function(result) {
+        if (selesai) {
+          return;
+        }
+
+        bersihkan();
+
+        prosesHasilServer(result);
+      };
+
+      const query = new URLSearchParams();
+
+      query.set('api', 'scan');
+      query.set('handoff', HANDOFF);
+      query.set('qrCode', kodeQR);
+      query.set('jenis', JENIS);
+      query.set('latitude', String(lokasiGPS.latitude));
+      query.set('longitude', String(lokasiGPS.longitude));
+      query.set('accuracy', String(lokasiGPS.accuracy || 0));
+      query.set('callback', callbackName);
+      query.set('_', String(Date.now()));
+
+      script = document.createElement('script');
+
+      script.async = true;
+      script.src = API_URL + '?' + query.toString();
+
+      script.onerror = function() {
+        if (selesai) {
+          return;
+        }
+
+        bersihkan();
+
+        sedangMemproses = false;
+
+        setStatus(
+          '❌ Gagal menghubungi server absensi.<br>' +
+          'Periksa koneksi internet lalu coba lagi.',
+          'gagal'
+        );
+
+        btnRestartEl.style.display = 'block';
+      };
+
+      document.body.appendChild(script);
+
+      /*
+       * Pengaman timeout.
+       */
+      setTimeout(function() {
+        if (selesai) {
+          return;
+        }
+
+        bersihkan();
+
+        sedangMemproses = false;
+
+        setStatus(
+          '❌ Server tidak memberikan jawaban.<br>' +
+          'Silakan coba scan kembali.',
+          'gagal'
+        );
+
+        btnRestartEl.style.display = 'block';
+      }, 20000);
+    }
+
+    function prosesHasilServer(result) {
+      sedangMemproses = false;
+
+      if (!result) {
+        setStatus(
+          '❌ Server mengembalikan jawaban kosong.',
+          'gagal'
+        );
+
+        btnRestartEl.style.display = 'block';
+        return;
+      }
+
+      const ok =
+        result.ok === true ||
+        result.success === true;
+
+      if (!ok) {
+        setStatus(
+          '❌ Absensi ditolak oleh sistem.',
+          'gagal'
+        );
+
+        setHasil(
+          '<b>ABSENSI TIDAK BERHASIL</b><br><br>' +
+          escapeHtml(
+            result.message ||
+            'Absensi tidak dapat diproses.'
+          ),
+          'gagal'
+        );
+
+        btnRestartEl.style.display = 'block';
+        return;
+      }
+
+      const attendance = result.attendance || {};
+      const student = result.student || {};
+
+      const nama =
+        student.NAMA_SISWA ||
+        student.nama ||
+        '-';
+
+      const nis =
+        student.NIS ||
+        '-';
+
+      const nisn =
+        student.NISN ||
+        '-';
+
+      const kelas =
+        student.NAMA_KELAS ||
+        student.namaKelas ||
+        '-';
+
+      const status =
+        attendance.status ||
+        result.status ||
+        '-';
+
+      const jenis =
+        attendance.jenis ||
+        JENIS;
+
+      const jam =
+        attendance.jam ||
+        '-';
+
+      const jarak =
+        attendance.jarak ||
+        attendance.jarakMeter ||
+        '-';
+
+      let kelasHasil = 'sukses';
+
+      if (
+        String(status).toUpperCase() === 'TERLAMBAT'
+      ) {
+        kelasHasil = 'terlambat';
+      }
+
+      setStatus(
+        '✅ Absensi berhasil disimpan.',
+        'sukses'
+      );
+
+      setHasil(
+        '<b>✅ ABSENSI BERHASIL</b>' +
+        '<div class="siswa">' +
+          '<div><b>Nama:</b> ' +
+            escapeHtml(nama) +
+          '</div>' +
+          '<div><b>NIS:</b> ' +
+            escapeHtml(nis) +
+          '</div>' +
+          '<div><b>NISN:</b> ' +
+            escapeHtml(nisn) +
+          '</div>' +
+          '<div><b>Kelas:</b> ' +
+            escapeHtml(kelas) +
+          '</div>' +
+          '<div><b>Jenis:</b> ' +
+            escapeHtml(jenis) +
+          '</div>' +
+          '<div><b>Jam:</b> ' +
+            escapeHtml(jam) +
+          '</div>' +
+          '<div><b>Status:</b> ' +
+            escapeHtml(status) +
+          '</div>' +
+          '<div><b>Jarak:</b> ' +
+            escapeHtml(jarak) +
+            ' meter</div>' +
+        '</div>',
+        kelasHasil
+      );
+
+      /*
+       * Setelah berhasil, scanner tidak otomatis menembak ulang QR yang sama.
+       * Guru menekan "Scan QR Berikutnya".
+       */
+      btnRestartEl.style.display = 'block';
+    }
+
+    function tutupScanner() {
+      hentikanScanner();
+
+      if (gpsWatchId !== null) {
+        try {
+          navigator.geolocation.clearWatch(gpsWatchId);
+        } catch (e) {}
+
+        gpsWatchId = null;
+      }
+
+      /*
+       * Jika halaman dibuka dari tab baru, kembali ke halaman sebelumnya.
+       * Jika tidak bisa kembali, tab akan tetap berada di scanner.
+       */
+      try {
+        if (window.history.length > 1) {
+          window.history.back();
+          return;
+        }
+      } catch (e) {}
+
+      window.close();
+    }
+
+    window.addEventListener('load', function() {
+      if (!validasiAwal()) {
+        return;
+      }
+
+      mulaiGPS();
+
+      /*
+       * Beri sedikit waktu agar permintaan GPS muncul,
+       * lalu mulai kamera.
+       */
+      setTimeout(function() {
+        mulaiScanner();
+      }, 500);
+    });
+
+    window.addEventListener('beforeunload', function() {
+      try {
+        if (qrScanner && scannerBerjalan) {
+          qrScanner.stop();
+        }
+      } catch (e) {}
+
+      if (gpsWatchId !== null) {
+        try {
+          navigator.geolocation.clearWatch(gpsWatchId);
+        } catch (e) {}
+      }
+    });
+  </script>
 
 </body>
 </html>
