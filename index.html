@@ -314,7 +314,8 @@
         setStatus(
           '❌ Tidak ada balasan dari server absensi.<br>' +
           'Absensi mungkin sudah tersimpan. Scan QR yang sama sekali lagi: ' +
-          'jika muncul "SISWA SUDAH ABSEN", berarti datanya sudah masuk.',
+          'jika muncul "SISWA SUDAH ABSEN", berarti datanya sudah masuk.' +
+          '<br><small>Detail: ' + escapeHtml(alasan) + ' (setelah ' + MAKS_PERCOBAAN + ' percobaan)</small>',
           'gagal'
         );
         btnRestartEl.style.display = 'block';
@@ -345,6 +346,21 @@
         if (selesai) return;
         console.warn('Permintaan ke server gagal dimuat (percobaan ' + percobaan + ').');
         gagalTerhubung('gagal terhubung');
+      };
+
+      // Skrip berhasil dimuat tetapi fungsi balasan tidak dipanggil:
+      // server membalas halaman (login Google / error), bukan data absensi.
+      script.onload = function() {
+        if (selesai) return;
+        bersihkan();
+        sedangMemproses = false;
+        setStatus(
+          '❌ Server membalas dengan halaman, bukan data absensi.<br><br>' +
+          'Penyebab umum: akses deployment Apps Script belum "Anyone", ' +
+          'atau alamat API_URL di scanner bukan alamat deployment yang aktif.',
+          'gagal'
+        );
+        btnRestartEl.style.display = 'block';
       };
 
       document.body.appendChild(script);
