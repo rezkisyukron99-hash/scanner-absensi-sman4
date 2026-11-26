@@ -1,328 +1,240 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1e40af">
-  <title>Pemindai Absensi - SMA Negeri 4 Siak Hulu</title>
-
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
-    .page { min-height: 100vh; padding: 18px; }
-    .container { width: 100%; max-width: 520px; margin: 0 auto; }
-
-    .header { background: linear-gradient(135deg, #0b2a6f, #1d4ed8); color: #fff; border-radius: 16px;
-      padding: 18px; text-align: center; border-bottom: 4px solid #c8962e;
-      box-shadow: 0 5px 18px rgba(0,0,0,.10); margin-bottom: 16px; }
-    .header h1 { margin: 0; font-size: 21px; }
-    .header p { margin: 6px 0 0; opacity: .92; font-size: 14px; }
-    .petugas { margin-top: 8px; font-size: 12.5px; opacity: .85; }
-
-    .card { background: #fff; border-radius: 16px; padding: 18px;
-      box-shadow: 0 4px 16px rgba(0,0,0,.07); margin-bottom: 16px; }
-
-    #reader { width: 100%; max-width: 450px; margin: 0 auto; overflow: hidden; border-radius: 12px; background: #0f172a; min-height: 120px; }
-
-    .status { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f1f5f9;
-      color: #475569; text-align: center; line-height: 1.5; font-size: 14px; }
-    .status.proses { background: #fef3c7; color: #92400e; }
-    .status.sukses { background: #dcfce7; color: #166534; }
-    .status.gagal  { background: #fee2e2; color: #991b1b; }
-
-    .hasil { display: none; margin-top: 14px; padding: 16px; border-radius: 12px; line-height: 1.7; }
-    .hasil.sukses    { display: block; background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .hasil.terlambat { display: block; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
-    .hasil.gagal     { display: block; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-    .hasil .nama { font-size: 18px; font-weight: 800; }
-
-    .btn { width: 100%; border: none; border-radius: 10px; padding: 13px; font-weight: 800;
-      font-size: 15px; cursor: pointer; margin-top: 10px; }
-    .btn-biru { background: #1d4ed8; color: #fff; }
-    .btn-hijau { background: #16a34a; color: #fff; }
-    .btn-abu { background: #e2e8f0; color: #334155; }
-
-    .riwayat h2 { margin: 0 0 8px; font-size: 15px; }
-    .riwayat ul { list-style: none; margin: 0; padding: 0; }
-    .riwayat li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0;
-      border-top: 1px solid #e2e8f0; font-size: 13.5px; }
-    .riwayat li:first-child { border-top: 0; }
-    .riwayat small { color: #64748b; }
-    .tag { font-weight: 700; white-space: nowrap; }
-    .tag.Hadir { color: #166534; } .tag.Terlambat { color: #92400e; }
-    .kosong { color: #94a3b8; font-size: 13.5px; }
-
-    .fi { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; font-size: 14px; font-weight: 700; }
-    .fi input { border: 1px solid #cbd5e1; border-radius: 9px; padding: 11px 12px; font: inherit; font-weight: 400; }
-    .info { color: #64748b; font-size: 13px; line-height: 1.6; text-align: center; }
-    .footer { text-align: center; color: #94a3b8; font-size: 12px; padding: 8px 0 20px; }
-    [hidden] { display: none !important; }
-  </style>
-
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D2A2F">
+<title>Pemindai Absensi - SMA Negeri 4 Siak Hulu</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#F2F5F5;color:#13242A}
+  .page{min-height:100vh;padding:14px}
+  .wrap{max-width:520px;margin:0 auto}
+  .header{background:linear-gradient(135deg,#0D2A2F,#12776B);color:#fff;border-radius:16px;padding:18px;text-align:center;border-bottom:4px solid #C8962E;margin-bottom:14px}
+  .header h1{margin:0;font-size:20px}
+  .header p{margin:6px 0 0;font-size:13.5px;opacity:.9}
+  .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.07);margin-bottom:14px}
+  #reader{width:100%;max-width:450px;margin:0 auto;overflow:hidden;border-radius:12px;background:#0b1a1d;min-height:60px}
+  .status{margin-top:12px;padding:12px;border-radius:10px;background:#EEF2F2;color:#475569;text-align:center;font-size:14px;line-height:1.5}
+  .status.proses{background:#FEF3C7;color:#92400E}
+  .status.sukses{background:#DCFCE7;color:#166534}
+  .status.gagal{background:#FEE2E2;color:#991B1B}
+  .hasil{display:none;margin-top:12px;padding:14px;border-radius:12px;line-height:1.7;font-size:15px}
+  .hasil.sukses{display:block;background:#DCFCE7;color:#166534;border:1px solid #86EFAC}
+  .hasil.terlambat{display:block;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+  .hasil.gagal{display:block;background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
+  .hasil .nama{font-size:19px;font-weight:800}
+  .who{font-size:13px;color:#667781;text-align:center;margin-bottom:10px}
+  .btn{width:100%;border:0;border-radius:10px;padding:13px;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px}
+  .btn-hijau{background:#12776B;color:#fff}
+  .btn-abu{background:#E3E9EA;color:#13242A}
+  .fi{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;font-size:14px;font-weight:600}
+  .fi input{border:1px solid #C9D2CA;border-radius:9px;padding:11px 12px;font:inherit;font-weight:400}
+  #loginBox{display:none}
+  .foot{text-align:center;color:#94A3B8;font-size:12px;padding:6px 0 18px}
+</style>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
-
 <body>
-  <div class="page">
-    <div class="container">
+<div class="page"><div class="wrap">
 
-      <div class="header">
-        <h1>SMA Negeri 4 Siak Hulu</h1>
-        <p>Pemindai Absensi Siswa</p>
-        <div class="petugas" id="petugas"></div>
-      </div>
-
-      <!-- Login cadangan: hanya muncul bila sesi dari aplikasi tidak ada atau sudah habis -->
-      <div class="card" id="loginBox" hidden>
-        <b>Masuk</b>
-        <p class="info" id="loginPesan" style="text-align:left;margin:6px 0 12px">Sesi tidak ditemukan. Masuk dengan akun Anda.</p>
-        <form id="loginForm">
-          <label class="fi">Username<input id="lu" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
-          <label class="fi">Kata sandi<input id="lp" type="password" autocomplete="current-password" required></label>
-          <button class="btn btn-biru" id="lBtn" type="submit">Masuk</button>
-        </form>
-      </div>
-
-      <div class="card" id="scanBox">
-        <div id="reader"></div>
-        <div id="status" class="status proses">Menyiapkan kamera...</div>
-        <div id="hasil" class="hasil"></div>
-        <button id="btnKamera" class="btn btn-hijau" style="display:none" type="button">📷 Coba nyalakan kamera lagi</button>
-        <button id="btnTutup" class="btn btn-abu" type="button">Tutup pemindai</button>
-      </div>
-
-      <div class="card riwayat" id="riwayatBox">
-        <h2>Dipindai di perangkat ini</h2>
-        <ul id="riwayatList"><li class="kosong">Belum ada pemindaian.</li></ul>
-      </div>
-
-      <div class="card info">
-        Arahkan kamera ke QR pada kartu siswa. Kamera tetap menyala, jadi siswa berikutnya
-        bisa langsung dipindai tanpa menekan tombol apa pun.
-      </div>
-
-      <div class="footer">Sistem Informasi Absensi Siswa<br>SMA Negeri 4 Siak Hulu</div>
-    </div>
+  <div class="header">
+    <h1>SMA Negeri 4 Siak Hulu</h1>
+    <p>Pemindai Absensi Siswa</p>
   </div>
 
-  <script>
-    /* Alamat cadangan bila link dari aplikasi tidak membawa alamat Web App. */
-    var API_CADANGAN = 'https://script.google.com/macros/s/AKfycbyo8VlPeigWYEtq3K-KzDehJHdVB1aWmHPIzmZamFrV-0Ckn8HYmxhI162zU4aF_Vf20A/exec';
-    var API_RE = /^https:\/\/script\.google\.com\/(a\/[A-Za-z0-9._-]+\/)?macros\/s\/[A-Za-z0-9_-]+\/exec$/;
-    var TOKEN_RE = /^[A-Za-z0-9-]{20,120}$/;
-    var QR_RE = /^ASD:\d{10}:[A-Za-z0-9_-]{16}$/;
+  <div class="card" id="scanBox">
+    <div class="who" id="who"></div>
+    <div id="reader"></div>
+    <div id="status" class="status proses">Menyiapkan pemindai...</div>
+    <div id="hasil" class="hasil"></div>
+    <button id="btnUlang" class="btn btn-hijau" style="display:none" type="button">Buka kamera lagi</button>
+    <button id="btnTutup" class="btn btn-abu" type="button">Tutup pemindai</button>
+  </div>
 
-    var TOKEN = '', API = API_CADANGAN;
-    var qr = null, kameraJalan = false, sibuk = false, kodeTerakhir = '', waktuTerakhir = 0;
-    var riwayat = [];
+  <!-- Login hanya muncul bila halaman dibuka tanpa sesi dari aplikasi -->
+  <div class="card" id="loginBox">
+    <b>Masuk</b>
+    <p style="font-size:13.5px;color:#667781;margin:4px 0 12px">Sebaiknya buka pemindai dari menu Absensi QR di aplikasi agar tidak perlu masuk lagi.</p>
+    <div id="loginErr" class="status gagal" style="display:none;margin:0 0 12px"></div>
+    <form id="loginForm">
+      <label class="fi">Username<input id="lu" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="fi">Kata sandi<input id="lp" type="password" autocomplete="current-password" required></label>
+      <button class="btn btn-hijau" id="lBtn" type="submit">Masuk dan buka kamera</button>
+    </form>
+  </div>
 
-    function $(id) { return document.getElementById(id); }
-    function esc(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    function tunggu(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-    function setStatus(html, kelas) { $('status').className = 'status ' + (kelas || ''); $('status').innerHTML = html; }
-    function setHasil(html, kelas) { var h = $('hasil'); h.className = 'hasil ' + (kelas || ''); h.innerHTML = html || ''; h.style.display = html ? 'block' : 'none'; }
-    function getS(k) { try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } }
-    function setS(k, v) { try { if (v) sessionStorage.setItem(k, v); else sessionStorage.removeItem(k); } catch (e) {} }
+  <div class="foot">Sistem Informasi Absensi Siswa<br>SMA Negeri 4 Siak Hulu</div>
+</div></div>
 
-    /* ---------- Sesi dari aplikasi (dibawa lewat bagian # pada link) ---------- */
-    (function bacaSesi() {
-      var h = new URLSearchParams(location.hash.replace(/^#/, ''));
-      var q = new URLSearchParams(location.search);
-      var t = h.get('t') || q.get('t') || '';
-      var a = h.get('api') || q.get('api') || '';
-      if (a && API_RE.test(a)) { API = a; setS('asd_api', a); }
-      else if (API_RE.test(getS('asd_api'))) { API = getS('asd_api'); }
-      if (t && TOKEN_RE.test(t)) { TOKEN = t; setS('asd_t', t); }
-      else if (TOKEN_RE.test(getS('asd_t'))) { TOKEN = getS('asd_t'); }
-      /* Hapus token dari alamat agar tidak ikut tersalin atau tersimpan di riwayat browser */
-      if (location.hash || location.search) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
-    })();
+<script>
+/* ============================================================
+   KONFIGURASI
+   Alamat Web App biasanya dikirim otomatis oleh aplikasi lewat link.
+   Isi alamat di bawah hanya sebagai cadangan (alamat deployment /exec Anda).
+   ============================================================ */
+var API_CADANGAN = '';
 
-    /* ---------- Panggilan ke server (doPost di Scan.gs) ---------- */
-    function ErrServer(m) { this.message = m; }
+var JEDA_MS = 2200;   // jeda setelah tiap hasil sebelum QR berikutnya diterima
+var RE_API = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/;
 
-    async function panggil(fn, args) {
-      var gagal;
-      for (var i = 0; i < 2; i++) {
-        var ctl = new AbortController();
-        var tm = setTimeout(function () { ctl.abort(); }, 25000);
-        try {
-          var res = await fetch(API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ fn: fn, args: args }),
-            signal: ctl.signal
-          });
-          clearTimeout(tm);
-          var j = await res.json();
-          if (!j.ok) throw new ErrServer(j.error || 'Terjadi kesalahan.');
-          return j.data;
-        } catch (e) {
-          clearTimeout(tm);
-          if (e instanceof ErrServer) throw e;
-          gagal = e;
-          await tunggu(1200);
-        }
-      }
-      throw new Error('KONEKSI');
-    }
+var TOKEN = '', API_URL = '', USER = null;
+var qr = null, jalan = false, sibuk = false;
 
-    function tampilLogin(pesan) {
-      TOKEN = ''; setS('asd_t', '');
-      hentikanKamera();
-      $('scanBox').hidden = true; $('riwayatBox').hidden = true;
-      $('loginBox').hidden = false;
-      $('loginPesan').textContent = pesan || 'Masuk dengan akun Anda.';
-      $('lu').focus();
-    }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function setStatus(h, k){ var e = $('status'); e.className = 'status ' + (k || ''); e.innerHTML = h; }
+function setHasil(h, k){ var e = $('hasil'); e.className = 'hasil ' + (k || ''); e.innerHTML = h || ''; e.style.display = h ? 'block' : 'none'; }
+function store(k, v){ try{ if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); }catch(e){} return ''; }
 
-    $('loginForm').onsubmit = async function (e) {
-      e.preventDefault();
-      var b = $('lBtn'); b.disabled = true; b.textContent = 'Memproses...';
-      try {
-        var r = await panggil('login', [$('lu').value, $('lp').value]);
-        TOKEN = r.token; setS('asd_t', TOKEN);
-        $('lp').value = '';
-        $('loginBox').hidden = true; $('scanBox').hidden = false; $('riwayatBox').hidden = false;
-        $('petugas').textContent = 'Petugas: ' + r.user.nama + ' (' + r.user.role + ')';
-        if (r.user.wajibGanti) { tampilLogin('Kata sandi Anda masih sementara. Buka aplikasi absensi dan ganti kata sandi dulu.'); }
-        else mulaiKamera();
-      } catch (err) {
-        $('loginPesan').textContent = pesanError(err);
-      }
-      b.disabled = false; b.textContent = 'Masuk';
-    };
+/* ---------- Panggilan ke server (doPost di Scan.gs) ---------- */
+function panggil(fn, args){
+  if (!API_URL) return Promise.reject(new Error('Alamat Web App belum diketahui. Buka pemindai dari menu Absensi QR di aplikasi.'));
+  // Tanpa header khusus agar menjadi "simple request" dan tidak diblokir CORS preflight
+  return fetch(API_URL, { method: 'POST', body: JSON.stringify({ fn: fn, args: args }), redirect: 'follow' })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if (!j.ok) throw new Error(j.error || 'Terjadi kesalahan.'); return j.data; });
+}
 
-    function pesanError(e) {
-      var m = e && e.message ? e.message : String(e);
-      if (m === 'KONEKSI') return 'Tidak dapat terhubung ke server. Periksa internet. Jika tetap gagal, pastikan akses deployment Apps Script diatur "Anyone".';
-      return m;
-    }
+/* ---------- Awal: ambil sesi dari link aplikasi ---------- */
+function bacaLink(){
+  var h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  var t = h.get('t') || '', a = h.get('api') || '';
+  if (t) store('asd_t', t);
+  if (a && RE_API.test(a)) store('asd_api', a);
+  // Hapus token dari alamat agar tidak ikut tersalin atau tersimpan di riwayat
+  if (location.hash) { try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){} }
+  TOKEN = t || store('asd_t') || '';
+  var api = (a && RE_API.test(a)) ? a : (store('asd_api') || '');
+  API_URL = api || API_CADANGAN;
+}
 
-    /* ---------- Kamera ---------- */
-    async function mulaiKamera() {
-      if (kameraJalan) return;
-      if (typeof Html5Qrcode === 'undefined') {
-        setStatus('❌ Pustaka pemindai gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.', 'gagal');
-        $('btnKamera').style.display = 'block';
-        return;
-      }
-      $('btnKamera').style.display = 'none';
-      setStatus('📷 Meminta akses kamera...<br>Jika muncul permintaan izin, pilih Izinkan.', 'proses');
-      var config = {
-        fps: 10, aspectRatio: 1.0,
-        qrbox: function (w, h) { var s = Math.floor(Math.min(w, h) * 0.72); s = Math.min(320, Math.max(180, s)); return { width: s, height: s }; }
-      };
-      try {
-        qr = new Html5Qrcode('reader');
-        try {
-          await qr.start({ facingMode: 'environment' }, config, ketikaTerbaca, function () {});
-        } catch (e1) {
-          try { qr.clear(); } catch (x) {}
-          qr = new Html5Qrcode('reader');
-          await qr.start({ facingMode: 'user' }, config, ketikaTerbaca, function () {});
-        }
-        kameraJalan = true;
-        setStatus('🟢 Kamera aktif. Arahkan QR siswa ke kotak pemindai.', '');
-      } catch (err) {
-        kameraJalan = false;
-        var m = String(err && err.message ? err.message : err);
-        if (/permission|notallowed|denied/i.test(m)) m = 'Izin kamera ditolak atau diblokir browser. Izinkan kamera untuk halaman ini, lalu coba lagi.';
-        setStatus('❌ Kamera tidak dapat dibuka.<br><br>' + esc(m), 'gagal');
-        $('btnKamera').style.display = 'block';
-      }
-    }
-    async function hentikanKamera() {
-      if (!qr) { kameraJalan = false; return; }
-      try { if (kameraJalan) await qr.stop(); } catch (e) {}
-      try { qr.clear(); } catch (e) {}
-      qr = null; kameraJalan = false;
-    }
-    $('btnKamera').onclick = mulaiKamera;
+function tampilLogin(pesan){
+  hentikan();
+  $('scanBox').style.display = 'none';
+  $('loginBox').style.display = 'block';
+  var e = $('loginErr');
+  if (pesan){ e.textContent = pesan; e.style.display = 'block'; } else e.style.display = 'none';
+  $('lu').focus();
+}
+function tampilScan(){
+  $('loginBox').style.display = 'none';
+  $('scanBox').style.display = 'block';
+}
 
-    /* ---------- Saat QR terbaca ---------- */
-    async function ketikaTerbaca(teks) {
-      var kode = String(teks || '').trim();
-      var now = Date.now();
-      if (!kode || sibuk) return;
-      if (kode === kodeTerakhir && now - waktuTerakhir < 4000) return;
-      kodeTerakhir = kode; waktuTerakhir = now;
-      sibuk = true;
-      try { if (navigator.vibrate) navigator.vibrate(80); } catch (e) {}
+function mulai(){
+  bacaLink();
+  if (!API_URL){ tampilScan(); setStatus('❌ Alamat Web App belum diketahui.<br>Buka pemindai dari menu <b>Absensi QR</b> di aplikasi.', 'gagal'); return; }
+  if (!TOKEN){ tampilLogin(''); return; }
+  setStatus('Memeriksa sesi...', 'proses');
+  panggil('getSession', [TOKEN]).then(function(info){
+    USER = info;
+    if ((info.pages || []).indexOf('scan') < 0){ tampilLogin('Akun ini tidak memiliki akses untuk memindai.'); return; }
+    siap();
+  }).catch(function(e){
+    var m = String(e.message || e);
+    if (m.indexOf('SESI_HABIS') > -1){ store('asd_t', null); TOKEN = ''; tampilLogin('Sesi berakhir. Silakan masuk lagi.'); return; }
+    tampilScan(); setStatus('❌ ' + esc(m), 'gagal'); $('btnUlang').style.display = 'block';
+  });
+}
 
-      if (!QR_RE.test(kode)) {
-        setStatus('❌ QR ini bukan kartu absensi siswa.', 'gagal');
-        setHasil('<b>QR tidak dikenali</b><br>Pastikan yang dipindai adalah kartu QR siswa dari sekolah.', 'gagal');
-        setTimeout(function () { sibuk = false; }, 1500);
-        return;
-      }
+function siap(){
+  tampilScan();
+  $('who').textContent = 'Petugas: ' + (USER ? USER.nama + ' (' + USER.role + ')' : '');
+  setTimeout(kamera, 250);
+}
 
-      setStatus('⏳ QR terbaca. Memeriksa...', 'proses');
-      setHasil('', '');
-      try {
-        var r = await panggil('scanQR', [TOKEN, kode]);
-        tampilHasil(r);
-      } catch (err) {
-        var m = err && err.message ? err.message : '';
-        if (m.indexOf('SESI_HABIS') > -1) { tampilLogin('Sesi berakhir. Masuk lagi, atau buka pemindai dari aplikasi absensi.'); sibuk = false; return; }
-        if (m.indexOf('GANTI_SANDI') > -1) { tampilLogin('Kata sandi Anda masih sementara. Buka aplikasi absensi dan ganti kata sandi dulu.'); sibuk = false; return; }
-        setStatus('❌ ' + esc(pesanError(err)), 'gagal');
-        setHasil('<b>Absensi belum tercatat</b><br>' + esc(pesanError(err)) + '<br>Scan kartu yang sama sekali lagi.', 'gagal');
-      }
-      setTimeout(function () { sibuk = false; }, 1500);
-    }
+/* ---------- Login cadangan ---------- */
+$('loginForm').onsubmit = function(ev){
+  ev.preventDefault();
+  var b = $('lBtn'); b.disabled = true; b.textContent = 'Memproses...'; $('loginErr').style.display = 'none';
+  panggil('login', [$('lu').value, $('lp').value]).then(function(r){
+    b.disabled = false; b.textContent = 'Masuk dan buka kamera';
+    TOKEN = r.token; store('asd_t', TOKEN); USER = r.user; $('lp').value = '';
+    if ((USER.pages || []).indexOf('scan') < 0){ tampilLogin('Akun ini tidak memiliki akses untuk memindai.'); return; }
+    siap();
+  }).catch(function(e){
+    b.disabled = false; b.textContent = 'Masuk dan buka kamera';
+    var el = $('loginErr'); el.textContent = e.message || String(e); el.style.display = 'block';
+  });
+};
 
-    function tampilHasil(r) {
-      var s = r.siswa || {};
-      if (r.ok) {
-        var telat = String(r.status) === 'Terlambat';
-        setStatus(telat ? '⚠️ Tercatat terlambat.' : '✅ Absensi berhasil.', telat ? 'proses' : 'sukses');
-        setHasil('<div class="nama">' + esc(s.nama) + '</div>' + esc(s.kelas) + '<br>' +
-          '<b>' + esc(r.status) + '</b> pukul ' + esc(r.jam), telat ? 'terlambat' : 'sukses');
-        tambahRiwayat(s, r.status, r.jam);
-      } else if (r.duplikat) {
-        setStatus('⚠️ Siswa sudah absen.', 'proses');
-        setHasil('<b>SUDAH ABSEN</b><br>' + (s.nama ? '<div class="nama">' + esc(s.nama) + '</div>' + esc(s.kelas) + '<br>' : '') + esc(r.pesan), 'terlambat');
-      } else {
-        setStatus('❌ ' + esc(r.pesan || 'Absensi ditolak.'), 'gagal');
-        setHasil('<b>ABSENSI DITOLAK</b><br>' + esc(r.pesan || 'Absensi tidak dapat diproses.'), 'gagal');
-      }
-    }
+/* ---------- Kamera ---------- */
+function kamera(){
+  if (jalan) return;
+  if (typeof Html5Qrcode === 'undefined'){ setStatus('❌ Pustaka pemindai gagal dimuat. Periksa koneksi internet lalu muat ulang.', 'gagal'); $('btnUlang').style.display = 'block'; return; }
+  $('btnUlang').style.display = 'none';
+  setStatus('📷 Meminta akses kamera...<br>Jika diminta izin, pilih <b>Izinkan</b>.', 'proses');
+  var cfg = { fps: 10, aspectRatio: 1.0, rememberLastUsedCamera: true,
+    qrbox: function(w, h){ var s = Math.floor(Math.min(w, h) * 0.72); s = Math.min(320, Math.max(180, s)); return { width: s, height: s }; } };
+  qr = new Html5Qrcode('reader');
+  qr.start({ facingMode: 'environment' }, cfg, terbaca, function(){})
+    .catch(function(){
+      try{ qr.clear(); }catch(e){}
+      qr = new Html5Qrcode('reader');
+      return qr.start({ facingMode: 'user' }, cfg, terbaca, function(){});
+    })
+    .then(function(){ jalan = true; setStatus('🟢 Kamera aktif.<br>Arahkan ke QR pada kartu siswa.', ''); })
+    .catch(function(e){
+      jalan = false;
+      var m = String((e && e.message) || e), k = m.toLowerCase();
+      if (k.indexOf('permission') > -1 || k.indexOf('notallowed') > -1) m = 'Izin kamera ditolak. Izinkan kamera untuk halaman ini di pengaturan browser, lalu coba lagi.';
+      setStatus('❌ Kamera tidak dapat dibuka.<br>' + esc(m), 'gagal');
+      $('btnUlang').style.display = 'block';
+    });
+}
+function hentikan(){
+  var q = qr; qr = null;
+  if (!q){ jalan = false; return Promise.resolve(); }
+  return q.stop().catch(function(){}).then(function(){ try{ q.clear(); }catch(e){} jalan = false; });
+}
 
-    function tambahRiwayat(s, status, jam) {
-      riwayat.unshift({ nama: s.nama, kelas: s.kelas, status: status, jam: jam });
-      riwayat = riwayat.slice(0, 8);
-      $('riwayatList').innerHTML = riwayat.map(function (x) {
-        return '<li><div>' + esc(x.nama) + '<br><small>' + esc(x.kelas) + ' &middot; ' + esc(x.jam) + '</small></div><span class="tag ' + esc(x.status) + '">' + esc(x.status) + '</span></li>';
-      }).join('');
-    }
+/* ---------- Saat QR terbaca ---------- */
+function terbaca(teks){
+  if (sibuk) return;
+  teks = String(teks || '').trim();
+  if (!teks) return;
+  sibuk = true;
+  setStatus('⏳ QR terbaca. Mencatat absensi...', 'proses');
+  panggil('scanQR', [TOKEN, teks]).then(tampilHasil).catch(function(e){
+    var m = String(e.message || e);
+    if (m.indexOf('SESI_HABIS') > -1){ store('asd_t', null); TOKEN = ''; sibuk = false; tampilLogin('Sesi berakhir. Silakan masuk lagi.'); return; }
+    if (m.indexOf('GANTI_SANDI') > -1){ setStatus('❌ Kata sandi Anda masih sementara. Ganti dulu di aplikasi, lalu buka pemindai lagi.', 'gagal'); jedaLalu(); return; }
+    if (m.indexOf('tidak memiliki akses') > -1){ setStatus('❌ Akun ini tidak memiliki akses untuk memindai.', 'gagal'); jedaLalu(); return; }
+    // Gangguan jaringan: aman dicoba lagi karena server menolak absen ganda
+    setStatus('❌ Koneksi bermasalah: ' + esc(m) + '<br>Scan QR yang sama lagi. Jika muncul "sudah tercatat", datanya sudah masuk.', 'gagal');
+    jedaLalu();
+  });
+}
+function jedaLalu(){ setTimeout(function(){ sibuk = false; }, JEDA_MS); }
 
-    /* ---------- Tutup ---------- */
-    $('btnTutup').onclick = function () {
-      hentikanKamera();
-      try { window.close(); } catch (e) {}
-      setStatus('Pemindai ditutup. Anda dapat menutup tab ini.', '');
-    };
-    window.addEventListener('beforeunload', function () { try { if (qr && kameraJalan) qr.stop(); } catch (e) {} });
+function tampilHasil(r){
+  var s = r.siswa || {};
+  if (r.ok){
+    var telat = String(r.status).toLowerCase() === 'terlambat';
+    setStatus('✅ Absensi tercatat.', 'sukses');
+    setHasil('<div class="nama">' + esc(s.nama) + '</div><div>Kelas: ' + esc(s.kelas) + '</div><div>NISN: ' + esc(s.nisn) + '</div><div>Status: <b>' + esc(r.status) + '</b> pukul ' + esc(r.jam) + '</div>', telat ? 'terlambat' : 'sukses');
+    try{ navigator.vibrate && navigator.vibrate(120); }catch(e){}
+  } else if (r.duplikat){
+    setStatus('⚠️ Siswa sudah absen.', 'proses');
+    setHasil('<b>SUDAH ABSEN</b><div class="nama">' + esc(s.nama) + '</div><div>Kelas: ' + esc(s.kelas) + '</div><div>' + esc(r.pesan) + '</div>', 'terlambat');
+    try{ navigator.vibrate && navigator.vibrate([80, 60, 80]); }catch(e){}
+  } else {
+    setStatus('❌ Absensi ditolak.', 'gagal');
+    setHasil('<b>TIDAK BERHASIL</b><div>' + esc(r.pesan || 'QR tidak dapat diproses.') + '</div>', 'gagal');
+    try{ navigator.vibrate && navigator.vibrate([200]); }catch(e){}
+  }
+  jedaLalu();
+}
 
-    /* ---------- Mulai ---------- */
-    (async function start() {
-      if (!TOKEN) { tampilLogin('Buka pemindai dari menu Absensi QR di aplikasi agar tidak perlu masuk lagi, atau masuk di sini.'); return; }
-      mulaiKamera(); /* kamera langsung menyala, pengecekan sesi berjalan bersamaan */
-      try {
-        var info = await panggil('getSession', [TOKEN]);
-        $('petugas').textContent = 'Petugas: ' + info.nama + ' (' + info.role + ')';
-        if (info.wajibGanti) tampilLogin('Kata sandi Anda masih sementara. Buka aplikasi absensi dan ganti kata sandi dulu.');
-      } catch (err) {
-        var m = err && err.message ? err.message : '';
-        if (m.indexOf('SESI_HABIS') > -1) tampilLogin('Sesi berakhir. Buka pemindai lagi dari aplikasi absensi, atau masuk di sini.');
-        else if (m === 'KONEKSI') setStatus('⚠️ Server belum terjangkau. Kamera tetap aktif; hasil scan dicek saat dikirim.', 'proses');
-      }
-    })();
-  </script>
+$('btnUlang').onclick = function(){ hentikan().then(kamera); };
+$('btnTutup').onclick = function(){
+  hentikan();
+  try{ if (history.length > 1){ history.back(); return; } }catch(e){}
+  window.close();
+};
+window.addEventListener('beforeunload', function(){ try{ if (qr && jalan) qr.stop(); }catch(e){} });
+window.addEventListener('load', mulai);
+</script>
 </body>
 </html>
